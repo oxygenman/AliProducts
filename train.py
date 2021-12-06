@@ -27,8 +27,7 @@ from mscv.summary import create_summary_writer, write_meters_loss, write_image
 
 
 import misc_utils as utils
-
-
+os.environ['CUDA_VISIBLE_DEVICES']="0,1,2,3"
 # 初始化
 with torch.no_grad():
     # 初始化路径
@@ -55,6 +54,11 @@ with torch.no_grad():
 
     # 加载预训练模型，恢复中断的训练
     if opt.load:
+        #saved_model = torch.load(opt.load)
+        #model_dict = model.state_dict()
+        #state_dict = {k:v for k,v in saved_model.items() if k in model_dict.keys()}
+        #model_dict.update(state_dict)
+        #model.load_state_dict(model_dict)
         load_epoch = model.load(opt.load)
         start_epoch = load_epoch + 1 if opt.resume else 1
     else:

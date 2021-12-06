@@ -3,11 +3,11 @@ from easydict import EasyDict
 from options import opt
 
 
-warmup = 1.  # warmup的学习率系数, 为1时不进行warmup
+warmup = 1  # warmup的学习率系数, 为1时不进行warmup
 
 schedulers = {
     '1x': {  # Faster_RCNN
-        'epochs': [1, 7, 10, 12],  # 12个epoch   7:3:2
+        'epochs': [1, 10, 11, 14],  # 12个epoch   7:3:2
         'ratios': [warmup, 1, 0.1, 0.01],
     },
     '2x': {

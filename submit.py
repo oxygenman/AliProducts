@@ -42,6 +42,10 @@ def parse_args():
 
 
 opt = parse_args()
+gpu_list=opt.gpu_ids.split(',')
+opt.gpu_num = len(gpu_list)
+
+opt.device ='cuda:'+opt.gpu_ids if torch.cuda.is_available() and opt.gpu_ids != '-1' else 'cpu'
 
 if not opt.load:
     print('Usage: submit.py --model your_model --load LOAD --gpu 0')
@@ -72,7 +76,7 @@ with open('submission.csv', 'w') as f:  # 如果在windows下打开csv出现空�
         # ct_num += 1
         with torch.no_grad():
             img_var = Variable(input, requires_grad=False).to(device=opt.device)
-            predicted = model(img_var)
+            feature,predicted = model(img_var)
             _, predicted = torch.max(predicted, 1)
             # ct_num += label.size(0)
             # correct += (predicted == label_var).sum().item()

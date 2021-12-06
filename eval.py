@@ -44,7 +44,7 @@ def evaluate(model, dataloader, epochs, writer, logger, data_name='val'):
             with torch.no_grad():
                 img_var = Variable(input, requires_grad=False).to(device=opt.device)
                 label_var = Variable(label, requires_grad=False).to(device=opt.device)
-                predicted = model(img_var)
+                feature,predicted = model(img_var)
                 _, predicted = torch.max(predicted, 1)
                 ct_num += label.size(0)
                 correct += (predicted == label_var).sum().item()

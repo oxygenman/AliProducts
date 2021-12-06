@@ -33,7 +33,7 @@ def parse_args():
 
     # batch size
     parser.add_argument('--batch_size', '-b', type=int, default=1, help='input batch size')
-    parser.add_argument('--workers', '-w', type=int, default=4, help='dataloader workers')
+    parser.add_argument('--workers', '-w', type=int, default=8, help='dataloader workers')
     
     # optimizer and scheduler
     parser.add_argument('--optimizer', choices=['adam', 'sgd', 'radam', 'lookahead', 'ranger'], default='adam')
@@ -46,7 +46,7 @@ def parse_args():
 
     # scale
     parser.add_argument('--scale', type=int, default=256, help='scale images to this size')
-    parser.add_argument('--num_classes', type=int, default=43, help='num of classes')
+    parser.add_argument('--num_classes', type=int, default=50030, help='num of classes')
 
     # for datasets
     parser.add_argument('--dataset', choices=['default'], default='default', help='training dataset')
@@ -69,7 +69,7 @@ def parse_args():
 
     # parser.add_argument('--which-epoch', type=int, default=None, help='which epoch to resume')
     parser.add_argument('--epochs', '--max_epoch', type=int, default=10, help='epochs to train')
-    parser.add_argument('--lr', type=float, default=0.0001, help='initial learning rate for adam')
+    parser.add_argument('--lr', type=float, default=0.001, help='initial learning rate for adam')
 
     parser.add_argument('--save_freq', type=int, default=1, help='freq to save models')
     parser.add_argument('--eval_freq', '--val_freq', type=int, default=1, help='freq to eval models')
@@ -79,8 +79,12 @@ def parse_args():
 
 
 opt = parse_args()
+gpu_list=opt.gpu_ids.split(',')
+opt.gpu_num = len(gpu_list)
 
-opt.device = 'cuda:' + opt.gpu_ids if torch.cuda.is_available() and opt.gpu_ids != '-1' else 'cpu'
+opt.device ='cuda:'+opt.gpu_ids if torch.cuda.is_available() and opt.gpu_ids != '-1' else 'cpu'
+
+print('----------------:',opt.device)
 
 if opt.debug:
     opt.save_freq = 1

@@ -1,9 +1,10 @@
 from .label_smooth import LabelSmoothing
+from .arc import ArcLoss
 from torch import nn
 from options import opt
 
 criterionCE = nn.CrossEntropyLoss()
-
+arcLoss = ArcLoss()
 if opt.smooth != 0:
     label_smooth_loss = LabelSmoothing(smoothing=opt.smooth)
 else:
@@ -21,3 +22,7 @@ def get_loss(predicted, label, avg_meters, *args):
         smooth_loss = label_smooth_loss(predicted, label) 
         avg_meters.update({f'CE loss(smooth={opt.smooth})': smooth_loss.item()})
         return smooth_loss
+def get_arc_loss(predicted, label, avg_meters):
+    arc_loss,acc= arcLoss(predicted, label)
+    avg_meters.update({'arc loss':arc_loss.item()})
+    return arc_loss,acc

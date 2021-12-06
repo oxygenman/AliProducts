@@ -25,7 +25,7 @@ class BaseModel(torch.nn.Module):
         pass
 
     def load(self, ckpt_path):
-        load_dict = torch.load(ckpt_path, map_location=opt.device)
+        load_dict = torch.load(ckpt_path)
         self.classifier.load_state_dict(load_dict['classifier'])
         if opt.resume:
             self.optimizer.load_state_dict(load_dict['optimizer'])

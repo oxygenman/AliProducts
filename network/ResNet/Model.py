@@ -25,7 +25,10 @@ class Model(BaseModel):
     def __init__(self, opt):
         super(Model, self).__init__()
         self.opt = opt
-        self.classifier = Classifier()
+        if opt.gpu_num>1:
+            self.classifier = nn.DataParallel(Classifier())
+        else:
+            self.classifier = Classifier()
         #####################
         #    Init weights
         #####################

@@ -7,7 +7,7 @@ import torch.nn.functional as F
 
 from torchvision.models import resnet101
 
-classes = 50030
+classes = 4
 
 """
 这个文件定义分类器的具体结构
@@ -17,13 +17,15 @@ classes = 50030
 class Classifier(nn.Module):
     def __init__(self):
         super(Classifier, self).__init__()
-        self.network = resnet101(pretrained=False)
+        self.network = resnet101(pretrained=True)
         num_ftrs = self.network.fc.in_features
         print(self.network)
+        print('---------------->num_ftrs:',num_ftrs)
         self.network.fc = nn.Linear(num_ftrs, classes)
 
     def forward(self, input):
         x = input
+
         return self.network(x)
 
 

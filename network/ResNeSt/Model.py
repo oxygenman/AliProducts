@@ -1,14 +1,14 @@
 import pdb
-
+import sys
 import numpy as np
 import torch
 import torch.nn as nn
 import os
-
+from torch import optim
 from mscv import ExponentialMovingAverage, print_network
 from network.base_model import BaseModel
 
-from loss import get_loss
+from loss import get_arc_loss
 from optimizer import get_optimizer
 from scheduler import get_scheduler
 
@@ -18,7 +18,11 @@ class Model(BaseModel):
     def __init__(self, opt):
         super(Model, self).__init__()
         self.opt = opt
-        self.classifier = Classifier(opt.model)  
+        if opt.gpu_num>1:
+            self.classifier = nn.DataParallel(Classifier(opt.model))
+            print("-------------------use gpu-------------------")
+        else:
+            self.classifier = Classifier(opt.model)  
         # self.classifier.apply(weights_init)  # 初始化权重
 
         print_network(self.classifier)
@@ -28,9 +32,12 @@ class Model(BaseModel):
 
 
     def update(self, input, label):
-        predicted = self.classifier(input)
+        feature,predicted = self.classifier(input)
 
-        loss = get_loss(predicted, label, avg_meters=self.avg_meters)
+        loss,acc= get_arc_loss(predicted, label, avg_meters=self.avg_meters)
+        #if np.isnan(loss.cpu().detach().numpy()):
+        #    sys.exit(0)
+        #print（"----------",loss）
 
         self.optimizer.zero_grad()
         loss.backward()

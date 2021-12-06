@@ -138,3 +138,8 @@ checkpoints/
 logs/
 results/
 run_log.txt
+#vscode
+.vscode/
+#results
+*.csv
+*.jpg
